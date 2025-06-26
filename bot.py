@@ -111,7 +111,7 @@ def start_sales_funnel(user_id, username=None):
 
 def start_quiz_watchdog(user_id, username=None):
     def task():
-        time.sleep(30)  # Для теста, потом 7200 для 2 часов
+        time.sleep(720)  # Для теста, потом 7200 для 2 часов
         if user_id not in quiz_completed_users:
             start_sales_funnel(user_id, username)
     threading.Thread(target=task).start()
@@ -164,7 +164,7 @@ def check_subscription(call):
     username = call.from_user.first_name or call.from_user.username or "Уважаемый пользователь"
     if is_subscribed(user_id):
         bot.send_message(user_id, get_text("welcome", username=username))
-        send_delayed_message(user_id, 10, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 10, "welcome", "✅ Записаться на урок", "https://wa.me/79281138117", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
     else:
