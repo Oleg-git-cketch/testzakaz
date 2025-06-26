@@ -105,8 +105,8 @@ def start_sales_funnel(user_id, username=None):
     def task():
         send_delayed_message(user_id, 7200, "dop1_text", "✅ Подобрать подходящий вуз", "https://wa.me/79281138117", username)
         send_delayed_message(user_id, 14400, "dop2_text", "✅ Найти своего учителя", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 21600, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 39600, "final", "✅ Зафиксировать условия", "https://wa.me/79281138117", username)
+        # send_delayed_message(user_id, 21600, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 180*60, "final", "✅ Зафиксировать условия", "https://wa.me/79281138117", username)
     threading.Thread(target=task).start()
 
 def start_quiz_watchdog(user_id, username=None):
@@ -129,7 +129,7 @@ def start(message):
 
     # дальше твоя логика
     if is_subscribed(user_id):
-        bot.send_message(user_id, get_text("welcome", username=username))
+        send_delayed_message(user_id, 0, "material", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
         send_delayed_message(user_id, 1800, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
@@ -255,4 +255,10 @@ def handle_wrong_answer(call):
         if "message is not modified" not in str(e):
             raise
 
-bot.polling()
+while True:
+    try:
+        bot.polling(non_stop=True, timeout=60, long_polling_timeout=60)
+    except Exception as e:
+        print(f"⚠ Ошибка polling: {e}")
+        time.sleep(5)  # Ждем перед повторной попыткой
+
