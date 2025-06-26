@@ -129,7 +129,7 @@ def start(message):
 
     # дальше твоя логика
     if is_subscribed(user_id):
-        send_delayed_message(user_id, 0, "material", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
+        send_delayed_message(user_id, 0, "welcome", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
         send_delayed_message(user_id, 1800, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
