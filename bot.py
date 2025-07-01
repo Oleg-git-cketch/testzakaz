@@ -40,24 +40,26 @@ def send_delayed_message(user_id, delay, text_key, btn_text, btn_url, username=N
 
 
 def send_quiz_message_later(chat_id, username=None):
-    threading.Thread(target=lambda: (time.sleep(1800), bot.send_message(chat_id, get_text("quiz_intro", username), reply_markup=start_quiz_kb()))).start()
+    threading.Thread(target=lambda: (time.sleep(10), bot.send_message(chat_id, get_text("quiz_intro", username), reply_markup=start_quiz_kb()))).start()
+
 
 
 def start_sales_funnel(user_id, username=None):
     def funnel():
-        send_delayed_message(user_id, 7200, "dop1_text", "✅ Подобрать подходящий вуз", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 14400, "dop2_text", "✅ Найти своего учителя", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 21600, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 180*60, "final", "✅ Зафиксировать условия", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 0, "dop1_text", "✅ Подобрать подходящий вуз", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 10, "dop2_text", "✅ Найти своего учителя", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 20, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 30, "final", "✅ Зафиксировать условия", "https://wa.me/79281138117", username)
     threading.Thread(target=funnel).start()
 
 
 def start_quiz_watchdog(user_id, username=None):
     def watchdog():
-        time.sleep(7200)
+        time.sleep(10)
         if user_id not in quiz_completed_users:
             start_sales_funnel(user_id, username)
     threading.Thread(target=watchdog).start()
+
 
 
 # ---------------- Обработчики ----------------
@@ -71,7 +73,7 @@ def start(message):
 
     if is_subscribed(user_id):
         send_delayed_message(user_id, 0, "welcome", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
-        send_delayed_message(user_id, 1800, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 10, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
     else:
