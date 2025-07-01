@@ -6,7 +6,7 @@ import json
 from db import init_db, log_activation, get_activations
 from keyboard import start_kb, start_quiz_kb, ans1_kb, ans2_kb, ans3_kb
 
-bot = telebot.TeleBot('7952352811:AAFEbeTu8LW68XbqNAe9QmDvW9P2NUFBBfM')
+bot = telebot.TeleBot('7758603298:AAGJWi0x3fqEpRyBjdvy_eB4kAAdqMUKbjg')
 
 init_db()
 
