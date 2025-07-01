@@ -54,7 +54,6 @@ def send_log_html(message):
         bot.reply_to(message, "Лог пуст.")
         return
 
-    # Генерация HTML
     html = """
     <html>
     <head>
@@ -92,7 +91,6 @@ def send_log_html(message):
     </html>
     """
 
-    # Отправка как файл
     import tempfile
     with tempfile.NamedTemporaryFile(delete=False, suffix=".html", mode='w', encoding='utf-8') as tmpfile:
         tmpfile.write(html)
@@ -105,7 +103,7 @@ def start_sales_funnel(user_id, username=None):
     def task():
         send_delayed_message(user_id, 7200, "dop1_text", "✅ Подобрать подходящий вуз", "https://wa.me/79281138117", username)
         send_delayed_message(user_id, 14400, "dop2_text", "✅ Найти своего учителя", "https://wa.me/79281138117", username)
-        # send_delayed_message(user_id, 21600, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 21600, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
         send_delayed_message(user_id, 180*60, "final", "✅ Зафиксировать условия", "https://wa.me/79281138117", username)
     threading.Thread(target=task).start()
 
@@ -127,7 +125,6 @@ def start(message):
 
     log_activation(user_id, username, utm)
 
-    # дальше твоя логика
     if is_subscribed(user_id):
         send_delayed_message(user_id, 0, "welcome", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
         send_delayed_message(user_id, 1800, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
@@ -260,5 +257,5 @@ while True:
         bot.polling(non_stop=True, timeout=60, long_polling_timeout=60)
     except Exception as e:
         print(f"⚠ Ошибка polling: {e}")
-        time.sleep(5)  # Ждем перед повторной попыткой
+        time.sleep(5)
 
