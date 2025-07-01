@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 
 TOKEN = '7952352811:AAFEbeTu8LW68XbqNAe9QmDvW9P2NUFBBfM'
-CHANNEL_ID = '@sksjdjddh'  # Например, @mychannel
+CHANNEL_ID = '@test13242325'  # Например, @mychannel
 
 bot = telebot.TeleBot(TOKEN)
 
