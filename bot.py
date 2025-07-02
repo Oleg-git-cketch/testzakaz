@@ -38,7 +38,7 @@ def send_delayed_message(user_id, delay_seconds, text_key, button_text, button_u
 
 def send_quiz_message_later(chat_id, username=None):
     def task():
-        time.sleep(20)
+        time.sleep(60*60)
         bot.send_message(chat_id, get_text("quiz_intro", username=username), reply_markup=start_quiz_kb())
     threading.Thread(target=task).start()
 
@@ -101,15 +101,16 @@ def send_log_html(message):
 
 def start_sales_funnel(user_id, username=None):
     def task():
-        send_delayed_message(user_id, 40, "dop1_text", "✅ Подобрать подходящий вуз", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 50, "dop2_text", "✅ Найти своего учителя", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 60, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 70, "final", "✅ Зафиксировать условия", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 0, "bonus_text", "✅ Записаться со скидкой", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 120*60, "dop1_text", "✅ Подобрать подходящий вуз", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id,3600*12 , "dop2_text", "✅ Найти своего учителя", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 120*60, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 300*60, "final", "✅ Зафиксировать условия", "https://wa.me/79281138117", username)
     threading.Thread(target=task).start()
 
 def start_quiz_watchdog(user_id, username=None):
     def task():
-        time.sleep(30)  # Для теста, потом 7200 для 2 часов
+        time.sleep(120*60)
         if user_id not in quiz_completed_users:
             start_sales_funnel(user_id, username)
     threading.Thread(target=task).start()
@@ -127,7 +128,7 @@ def start(message):
 
     if is_subscribed(user_id):
         send_delayed_message(user_id, 0, "welcome", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
-        send_delayed_message(user_id, 10, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 60*30, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
     else:
@@ -147,10 +148,8 @@ def edit_text(message):
 
         _, key, raw_text = parts
 
-        # Только заменяем \n на настоящий перевод строки, всё остальное оставляем как есть
         new_text = raw_text.replace("\\n", "\n")
 
-        # Загружаем и обновляем texts.json
         with open("texts.json", encoding='utf-8') as f:
             data = json.load(f)
 
@@ -164,26 +163,6 @@ def edit_text(message):
     except Exception as e:
         bot.reply_to(message, f"❌ Ошибка при редактировании: {e}")
 
-
-# @bot.message_handler(commands=['edit'])
-# def edit_text(message):
-#     if message.from_user.id not in ADMIN_IDS:
-#         bot.reply_to(message, "❌ У вас нет прав для изменения текстов.")
-#         return
-#     try:
-#         _, key, *value = message.text.split()
-#         new_text = ' '.join(value)
-#         with open("texts.json", encoding='utf-8') as f:
-#             data = json.load(f)
-#         if key in data:
-#             data[key] = new_text
-#             with open("texts.json", "w", encoding='utf-8') as f:
-#                 json.dump(data, f, ensure_ascii=False, indent=2)
-#             bot.reply_to(message, f"✅ Текст для '{key}' обновлён.")
-#         else:
-#             bot.reply_to(message, f"❗ Ключ '{key}' не найден в файле.")
-#     except Exception as e:
-#         bot.reply_to(message, f"❌ Ошибка: {e}")
 
 @bot.callback_query_handler(func=lambda call: call.data == "check_sub")
 def check_subscription(call):
@@ -252,7 +231,6 @@ def complete_quiz(call):
             raise
     username = call.from_user.first_name or call.from_user.username or "Уважаемый пользователь"
     start_sales_funnel(call.from_user.id, username)
-    send_delayed_message(user_id, 10, "bonus_text", "✅ Записаться со скидкой", "https://wa.me/79281138117", username)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("false"))
