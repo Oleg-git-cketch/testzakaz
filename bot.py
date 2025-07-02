@@ -10,7 +10,7 @@ bot = telebot.TeleBot('7758603298:AAGJWi0x3fqEpRyBjdvy_eB4kAAdqMUKbjg')
 
 init_db()
 
-ADMIN_IDS = [229584900, 7040733741, 123456789]
+ADMIN_IDS = [229584900, 7040733741]
 quiz_started_users = set()
 quiz_completed_users = set()
 
