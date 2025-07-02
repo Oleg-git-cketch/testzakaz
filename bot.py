@@ -146,10 +146,11 @@ def edit_text(message):
             return
 
         _, key, raw_text = parts
-        # Обрабатываем \n и другие escape-последовательности
-        new_text = bytes(raw_text, "utf-8").decode("unicode_escape")
 
-        # Загружаем текущие тексты
+        # Только заменяем \n на настоящий перевод строки, всё остальное оставляем как есть
+        new_text = raw_text.replace("\\n", "\n")
+
+        # Загружаем и обновляем texts.json
         with open("texts.json", encoding='utf-8') as f:
             data = json.load(f)
 
@@ -162,6 +163,7 @@ def edit_text(message):
             bot.reply_to(message, f"❗ Ключ '{key}' не найден в файле.")
     except Exception as e:
         bot.reply_to(message, f"❌ Ошибка при редактировании: {e}")
+
 
 # @bot.message_handler(commands=['edit'])
 # def edit_text(message):
