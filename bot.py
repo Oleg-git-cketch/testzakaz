@@ -33,13 +33,13 @@ def send_delayed_message(user_id, delay_seconds, text_key, button_text, button_u
         time.sleep(delay_seconds)
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton(button_text, url=button_url))
-        bot.send_message(user_id, get_text(text_key, username=username), reply_markup=markup)
+        bot.send_message(user_id, get_text(text_key, username=username), reply_markup=markup, parse_mode='Markdown')
     threading.Thread(target=task).start()
 
 def send_quiz_message_later(chat_id, username=None):
     def task():
         time.sleep(40)
-        bot.send_message(chat_id, get_text("quiz_intro", username=username), reply_markup=start_quiz_kb())
+        bot.send_message(chat_id, get_text("quiz_intro", username=username), reply_markup=start_quiz_kb(), parse_mode='Markdown')
     threading.Thread(target=task).start()
 
 
@@ -131,7 +131,7 @@ def start(message):
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
     else:
-        bot.send_message(user_id, get_text("ask_sub", username=username), reply_markup=start_kb())
+        bot.send_message(user_id, get_text("ask_sub", username=username), reply_markup=start_kb(), parse_mode='Markdown')
 
 
 @bot.message_handler(commands=['edit'])
@@ -173,7 +173,7 @@ def check_subscription(call):
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
     else:
-        bot.send_message(user_id, get_text("sub_fail", username=username))
+        bot.send_message(user_id, get_text("sub_fail", username=username), parse_mode='Markdown')
 
 @bot.callback_query_handler(func=lambda call: call.data == "start_quiz")
 def start_quiz(call):
