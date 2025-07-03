@@ -101,7 +101,6 @@ def send_log_html(message):
 
 def start_sales_funnel(user_id, username=None):
     def task():
-        send_delayed_message(user_id, 0, "bonus_text", "✅ Записаться со скидкой", "https://t.me/EGE_BOOST100", username)
         send_delayed_message(user_id, 20, "dop1_text", "✅ Подобрать подходящий вуз", "https://t.me/EGE_BOOST100", username)
         send_delayed_message(user_id, 40, "dop2_text", "✅ Найти своего учителя", "https://t.me/EGE_BOOST100", username)
         send_delayed_message(user_id, 60, "case_text", "✅ Повторить успех", "https://t.me/EGE_BOOST100", username)
@@ -169,7 +168,8 @@ def check_subscription(call):
     user_id = call.from_user.id
     username = call.from_user.first_name or call.from_user.username or "Уважаемый пользователь"
     if is_subscribed(user_id):
-        send_delayed_message(user_id, 10, "welcome", "✅ Записаться на урок", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 0, "welcome", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
+        send_delayed_message(user_id, 20, "material", "✅ Записаться на урок", "https://t.me/EGE_BOOST100", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
     else:
@@ -230,6 +230,7 @@ def complete_quiz(call):
         if "message is not modified" not in str(e):
             raise
     username = call.from_user.first_name or call.from_user.username or "Уважаемый пользователь"
+    send_delayed_message(user_id, 0, "bonus_text", "✅ Записаться со скидкой", "https://t.me/EGE_BOOST100", username)
     start_sales_funnel(call.from_user.id, username)
 
 
