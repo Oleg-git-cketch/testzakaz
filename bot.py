@@ -38,7 +38,7 @@ def send_delayed_message(user_id, delay_seconds, text_key, button_text, button_u
 
 def send_quiz_message_later(chat_id, username=None):
     def task():
-        time.sleep(60*60)
+        time.sleep(40)
         bot.send_message(chat_id, get_text("quiz_intro", username=username), reply_markup=start_quiz_kb())
     threading.Thread(target=task).start()
 
@@ -102,15 +102,15 @@ def send_log_html(message):
 def start_sales_funnel(user_id, username=None):
     def task():
         send_delayed_message(user_id, 0, "bonus_text", "✅ Записаться со скидкой", "https://t.me/EGE_BOOST100", username)
-        send_delayed_message(user_id, 120*60, "dop1_text", "✅ Подобрать подходящий вуз", "https://t.me/EGE_BOOST100", username)
-        send_delayed_message(user_id,3600*12 , "dop2_text", "✅ Найти своего учителя", "https://t.me/EGE_BOOST100", username)
-        send_delayed_message(user_id, 120*60, "case_text", "✅ Повторить успех", "https://t.me/EGE_BOOST100", username)
-        send_delayed_message(user_id, 300*60, "final", "✅ Зафиксировать условия", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id, 20, "dop1_text", "✅ Подобрать подходящий вуз", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id, 40, "dop2_text", "✅ Найти своего учителя", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id, 60, "case_text", "✅ Повторить успех", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id, 80, "final", "✅ Зафиксировать условия", "https://t.me/EGE_BOOST100", username)
     threading.Thread(target=task).start()
 
 def start_quiz_watchdog(user_id, username=None):
     def task():
-        time.sleep(120*60)
+        time.sleep(40)
         if user_id not in quiz_completed_users:
             start_sales_funnel(user_id, username)
     threading.Thread(target=task).start()
@@ -128,7 +128,7 @@ def start(message):
 
     if is_subscribed(user_id):
         send_delayed_message(user_id, 0, "welcome", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
-        send_delayed_message(user_id, 60*30, "material", "✅ Записаться на урок", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id, 20, "material", "✅ Записаться на урок", "https://t.me/EGE_BOOST100", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
     else:

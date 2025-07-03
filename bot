@@ -10,7 +10,7 @@ bot = telebot.TeleBot('7758603298:AAGJWi0x3fqEpRyBjdvy_eB4kAAdqMUKbjg')
 
 init_db()
 
-ADMIN_IDS = [229584900, 7040733741, 123456789]
+ADMIN_IDS = [229584900, 7040733741]
 quiz_started_users = set()
 quiz_completed_users = set()
 
@@ -23,7 +23,7 @@ def get_text(key, username=None):
 
 def is_subscribed(user_id):
     try:
-        status = bot.get_chat_member(chat_id="@test13242325", user_id=user_id).status
+        status = bot.get_chat_member(chat_id="@English_GalinaSanna", user_id=user_id).status
         return status in ['member', 'creator', 'administrator']
     except:
         return False
@@ -38,7 +38,7 @@ def send_delayed_message(user_id, delay_seconds, text_key, button_text, button_u
 
 def send_quiz_message_later(chat_id, username=None):
     def task():
-        time.sleep(1800)
+        time.sleep(60*60)
         bot.send_message(chat_id, get_text("quiz_intro", username=username), reply_markup=start_quiz_kb())
     threading.Thread(target=task).start()
 
@@ -101,15 +101,16 @@ def send_log_html(message):
 
 def start_sales_funnel(user_id, username=None):
     def task():
-        send_delayed_message(user_id, 7200, "dop1_text", "✅ Подобрать подходящий вуз", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 14400, "dop2_text", "✅ Найти своего учителя", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 21600, "case_text", "✅ Повторить успех", "https://wa.me/79281138117", username)
-        send_delayed_message(user_id, 180*60, "final", "✅ Зафиксировать условия", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 0, "bonus_text", "✅ Записаться со скидкой", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id, 120*60, "dop1_text", "✅ Подобрать подходящий вуз", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id,3600*12 , "dop2_text", "✅ Найти своего учителя", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id, 120*60, "case_text", "✅ Повторить успех", "https://t.me/EGE_BOOST100", username)
+        send_delayed_message(user_id, 300*60, "final", "✅ Зафиксировать условия", "https://t.me/EGE_BOOST100", username)
     threading.Thread(target=task).start()
 
 def start_quiz_watchdog(user_id, username=None):
     def task():
-        time.sleep(7200)  # Для теста, потом 7200 для 2 часов
+        time.sleep(120*60)
         if user_id not in quiz_completed_users:
             start_sales_funnel(user_id, username)
     threading.Thread(target=task).start()
@@ -127,12 +128,11 @@ def start(message):
 
     if is_subscribed(user_id):
         send_delayed_message(user_id, 0, "welcome", "✅Забрать подарок", "https://drive.google.com/file/d/1JhS6i9fxFe7ajXjAqXL-_rGkExEwNYym/view?usp=sharing", username)
-        send_delayed_message(user_id, 1800, "material", "✅ Записаться на урок", "https://wa.me/79281138117", username)
+        send_delayed_message(user_id, 60*30, "material", "✅ Записаться на урок", "https://t.me/EGE_BOOST100", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
     else:
         bot.send_message(user_id, get_text("ask_sub", username=username), reply_markup=start_kb())
-
 
 
 @bot.message_handler(commands=['edit'])
@@ -141,26 +141,34 @@ def edit_text(message):
         bot.reply_to(message, "❌ У вас нет прав для изменения текстов.")
         return
     try:
-        _, key, *value = message.text.split()
-        new_text = ' '.join(value)
+        parts = message.text.split(maxsplit=2)
+        if len(parts) < 3:
+            bot.reply_to(message, "⚠ Формат: /edit <ключ> <новый текст>")
+            return
+
+        _, key, raw_text = parts
+
+        new_text = raw_text.replace("\\n", "\n")
+
         with open("texts.json", encoding='utf-8') as f:
             data = json.load(f)
+
         if key in data:
             data[key] = new_text
             with open("texts.json", "w", encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
-            bot.reply_to(message, f"✅ Текст для '{key}' обновлён.")
+            bot.reply_to(message, f"✅ Текст для ключа '{key}' обновлён.\n\n📄 Новый текст:\n{new_text}")
         else:
             bot.reply_to(message, f"❗ Ключ '{key}' не найден в файле.")
     except Exception as e:
-        bot.reply_to(message, f"❌ Ошибка: {e}")
+        bot.reply_to(message, f"❌ Ошибка при редактировании: {e}")
+
 
 @bot.callback_query_handler(func=lambda call: call.data == "check_sub")
 def check_subscription(call):
     user_id = call.from_user.id
     username = call.from_user.first_name or call.from_user.username or "Уважаемый пользователь"
     if is_subscribed(user_id):
-        bot.send_message(user_id, get_text("welcome", username=username))
         send_delayed_message(user_id, 10, "welcome", "✅ Записаться на урок", "https://wa.me/79281138117", username)
         send_quiz_message_later(user_id, username)
         start_quiz_watchdog(user_id, username)
@@ -223,7 +231,6 @@ def complete_quiz(call):
             raise
     username = call.from_user.first_name or call.from_user.username or "Уважаемый пользователь"
     start_sales_funnel(call.from_user.id, username)
-    send_delayed_message(user_id, 10, "bonus_text", "✅ Записаться со скидкой", "https://wa.me/79281138117", username)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("false"))
