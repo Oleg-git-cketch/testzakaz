@@ -110,7 +110,7 @@ def start_sales_funnel(user_id, username=None):
 
 def start_quiz_watchdog(user_id, username=None):
     def task():
-        time.sleep(40)
+        time.sleep(60)
         if user_id not in quiz_completed_users:
             start_sales_funnel(user_id, username)
     threading.Thread(target=task).start()
